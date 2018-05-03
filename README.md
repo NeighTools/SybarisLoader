@@ -18,6 +18,14 @@ This is a simple loader that loads and applies Sybaris-compatible patchers witho
 
 1. Extract the contents of the archive into `UnityDoorstop` folder. Overwrite when asked.
 
+## Installing patchers
+
+Put all Sybaris patchers into `<UnityDoorstop>\Sybaris\patches`.
+
+## More information
+
+More information can be found on the project's [wiki](https://github.com/NeighTools/SybarisLoader/wiki).
+
 ## Building
 
 You can build with Visual Studio 2015/2017 with .NET 3.5 installed. All dependencies are handled by NuGet.
