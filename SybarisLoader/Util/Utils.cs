@@ -14,37 +14,13 @@ namespace SybarisLoader.Util
             //GameAssembliesDir = Path.Combine(GameRootDir, Path.Combine($"{GameName}_Data", "Managed"));
 
             GameAssembliesDir = Path.GetDirectoryName(typeof(Assembly).Assembly.Location);
-            BinariesDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            RootDir = Path.Combine(BinariesDir, "..");
-            SybarisDir = Path.Combine(RootDir, "Sybaris");
-            LogsDir = Path.Combine(SybarisDir, "logs");
-            PatchesDir = Path.Combine(SybarisDir, "patches");
+            SybarisDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
-
-        /// <summary>
-        ///     Binaries directory for UnityPrePatcher.
-        /// </summary>
-        public static string BinariesDir { get; }
 
         /// <summary>
         ///     Game's Managed directory. Takes in account game's executable name.
         /// </summary>
         public static string GameAssembliesDir { get; }
-
-        /// <summary>
-        ///     Logs directory for UnityPrePatcher.
-        /// </summary>
-        public static string LogsDir { get; }
-
-        /// <summary>
-        ///     Patches directory for UnityPrePatcher.
-        /// </summary>
-        public static string PatchesDir { get; }
-
-        /// <summary>
-        ///     Base UnityPrePatcher directory.
-        /// </summary>
-        public static string RootDir { get; }
 
         /// <summary>
         ///     Patches directory for UnityPrePatcher.

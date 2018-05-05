@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Mono.Cecil;
-using PatchLoader;
 using SybarisLoader.Util;
 
 namespace SybarisLoader
@@ -25,7 +24,7 @@ namespace SybarisLoader
 
             Logger.Log(LogLevel.Info, "Loading patchers");
 
-            foreach (string dll in Directory.GetFiles(Utils.PatchesDir, "*.Patcher.dll"))
+            foreach (string dll in Directory.GetFiles(Utils.SybarisDir, "*.Patcher.dll"))
             {
                 Assembly assembly;
 
@@ -46,8 +45,7 @@ namespace SybarisLoader
                     if (type.IsInterface)
                         continue;
 
-                    FieldInfo targetAssemblyNamesField =
-                            type.GetField("TargetAssemblyNames", BindingFlags.Static | BindingFlags.Public);
+                    FieldInfo targetAssemblyNamesField = type.GetField("TargetAssemblyNames", BindingFlags.Static | BindingFlags.Public);
 
                     if (targetAssemblyNamesField == null || targetAssemblyNamesField.FieldType != typeof(string[]))
                         continue;
@@ -160,16 +158,22 @@ namespace SybarisLoader
         }
 
         /// <summary>
-        /// The entry point of the loader
+        ///     The entry point of the loader
         /// </summary>
         public static void Main()
         {
             if (!Directory.Exists(Utils.SybarisDir))
                 Directory.CreateDirectory(Utils.SybarisDir);
-            if (!Directory.Exists(Utils.LogsDir))
-                Directory.CreateDirectory(Utils.LogsDir);
 
             Configuration.Init();
+
+            if (!Configuration.Options["debug"]["logging"]["outputDirectory"].IsString)
+                Configuration.Options["debug"]["logging"]["enabled"] = false;
+            else if (!Directory.Exists(Configuration.Options["debug"]["logging"]["outputDirectory"]))
+                Directory.CreateDirectory(Configuration.Options["debug"]["logging"]["outputDirectory"]);
+
+            if (!Directory.Exists(Configuration.Options["debug"]["outputAssemblies"]["outputDirectory"]))
+                Directory.CreateDirectory(Configuration.Options["debug"]["outputAssemblies"]["outputDirectory"]);
 
             if (Configuration.Options["debug"]["logging"]["enabled"])
                 Logger.Enabled = true;
@@ -179,17 +183,7 @@ namespace SybarisLoader
             Logger.Log("===Sybaris Loader===");
             Logger.Log($"Started on {DateTime.Now:R}");
             Logger.Log($"Game assembly directory: {Utils.GameAssembliesDir}");
-            Logger.Log($"Doorstop directory: {Utils.RootDir}");
-
-            if (!Directory.Exists(Utils.PatchesDir))
-            {
-                Directory.CreateDirectory(Utils.PatchesDir);
-                Logger.Log(LogLevel.Info, "No patches directory found! Created an empty one!");
-                Logger.Dispose();
-                return;
-            }
-
-            Logger.Log(LogLevel.Info, "Adding ResolveAssembly Handler");
+            Logger.Log($"Sybaris directory: {Utils.SybarisDir}");
 
             // We add a custom assembly resolver
             // Since assemblies don't unload, this event handler will be called always there is an assembly to resolve
@@ -214,7 +208,7 @@ namespace SybarisLoader
         public static Assembly ResolvePatchers(object sender, ResolveEventArgs args)
         {
             // Try to resolve from patches directory
-            if (Utils.TryResolveDllAssembly(args.Name, Utils.PatchesDir, out Assembly patchAssembly))
+            if (Utils.TryResolveDllAssembly(args.Name, Utils.SybarisDir, out Assembly patchAssembly))
                 return patchAssembly;
             return null;
         }
@@ -237,8 +231,7 @@ namespace SybarisLoader
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Warning,
-                               $"Failed to create patched assembly directory to {outDir}!\nReason: {e.Message}");
+                    Logger.Log(LogLevel.Warning, $"Failed to create patched assembly directory to {outDir}!\nReason: {e.Message}");
                     return;
                 }
 

@@ -4,7 +4,7 @@ using System.Text;
 using SimpleJSON;
 using SybarisLoader.Util;
 
-namespace PatchLoader
+namespace SybarisLoader
 {
     public static class Configuration
     {
@@ -37,8 +37,9 @@ namespace PatchLoader
 
             Options["debug"]["logging"]["enabled"] = true;
             Options["debug"]["logging"]["redirectConsole"] = true;
+            Options["debug"]["logging"]["outputDirectory"] = @"Sybaris\logs";
             Options["debug"]["outputAssemblies"]["enabled"] = false;
-            Options["debug"]["outputAssemblies"]["outputDirectory"] = @"UnityPrePatcher\debug\assemblies";
+            Options["debug"]["outputAssemblies"]["outputDirectory"] = @"Sybaris\patched_assemblies";
 
             StringBuilder sb = new StringBuilder();
 

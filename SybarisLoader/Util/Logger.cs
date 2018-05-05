@@ -92,7 +92,7 @@ namespace SybarisLoader.Util
                 return;
 
             StreamWriter writer =
-                    File.CreateText(Path.Combine(Utils.LogsDir,
+                    File.CreateText(Path.Combine(Configuration.Options["debug"]["logging"]["outputDirectory"],
                                                  $"{DateTime.Now:yyyyMMdd_HHmmss_fff}_patcherloader.log"));
             writer.AutoFlush = true;
 
